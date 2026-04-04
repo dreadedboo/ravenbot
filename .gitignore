@@ -9,4 +9,3 @@ Ravenbot.pyproj
 /__pycache__/
 resources/config.json
 .gitattributes
-copyRavenbot.pyproj
