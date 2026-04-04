@@ -1,0 +1,74 @@
+[
+  {
+    "Name": "discord",
+    "Response": "Join the discord: https://discord.gg/SZa8RnbyzB",
+    "Count": 0,
+    "GlobalCooldown": "00:00:00",
+    "UserCooldown": "00:00:00",
+    "Aliases": []
+  },
+  {
+    "Name": "soundcloud",
+    "Response": "https://soundcloud.com/haileydread",
+    "Count": 0,
+    "GlobalCooldown": "00:00:00",
+    "UserCooldown": "00:00:00",
+    "Aliases": [
+      "sc"
+    ]
+  },
+  {
+    "Name": "lurk",
+    "Response": "catLurk %user%",
+    "Count": 0,
+    "GlobalCooldown": "00:00:00",
+    "UserCooldown": "00:00:00",
+    "Aliases": []
+  },
+  {
+    "Name": "twitter",
+    "Response": "Follow dreaded_ on Twitter: https://twitter.com/haileydread",
+    "Count": 0,
+    "GlobalCooldown": "00:00:00",
+    "UserCooldown": "00:00:00",
+    "Aliases": []
+  },
+  {
+    "Name": "youtube",
+    "Response": "Music: https://www.youtube.com/@haileydread // Stream Highlights: https://www.youtube.com/@dreadedTV",
+    "Count": 0,
+    "GlobalCooldown": "00:00:00",
+    "UserCooldown": "00:00:00",
+    "Aliases": [
+      "yt"
+    ]
+  },
+  {
+    "Name": "bluesky",
+    "Response": "https://bsky.app/profile/dreaded.boo",
+    "Count": 0,
+    "GlobalCooldown": "00:00:00",
+    "UserCooldown": "00:00:00",
+    "Aliases": [
+      "bsky"
+    ]
+  },
+  {
+    "Name": "kofi",
+    "Response": "https://ko-fi.com/dreadedboo",
+    "Count": 0,
+    "GlobalCooldown": "00:00:00",
+    "UserCooldown": "00:00:00",
+    "Aliases": []
+  },
+  {
+    "Name": "bandcamp",
+    "Response": "https://haileydread.bandcamp.com",
+    "Count": 0,
+    "GlobalCooldown": "00:00:00",
+    "UserCooldown": "00:00:00",
+    "Aliases": [
+      "bc"
+    ]
+  }
+]
