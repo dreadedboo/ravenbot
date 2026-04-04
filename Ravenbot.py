@@ -9,6 +9,7 @@ from twitchio import eventsub
 from twitchio.ext import commands
 from twitchio.ext.commands import CommandErrorPayload
 
+from components.CoreComp import CoreComp
 from components.CustomCommands import CustomCommands
 from utilities.FileUtils import openfile, parse_commands
 
@@ -51,7 +52,7 @@ class Bot(commands.AutoBot):
 
     async def setup_hook(self) -> None:
         await self.add_component(CustomCommands(self))
-
+        await self.add_component(CoreComp(self))
 
     async def event_command_error(self, payload: CommandErrorPayload) -> None:
         if str(payload.exception).find("not found") != -1:
@@ -151,4 +152,9 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    print("open the following link as bot account in your config file: "
+          "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
+    print("open the following link as your actual account: "
+          "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast&force_verify=true")
     main()
+
