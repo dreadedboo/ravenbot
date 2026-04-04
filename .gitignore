@@ -1,0 +1,11 @@
+resources/commands.json
+tokens.db
+tokens.db-shm
+tokens.db-wal
+.tio.tokens.json
+Ravenbot.pyproj
+/Ravenbot/
+/.idea/
+/__pycache__/
+resources/config.json
+.gitattributes
