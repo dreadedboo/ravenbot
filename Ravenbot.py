@@ -35,6 +35,8 @@ u = asyncio.run(get_user_ids())
 BOT_ID = u[0].id
 OWNER_ID = u[1].id
 
+# this is mostly just the quickstart guide code from twitch.io
+# will rewrite later, just wanted to get going
 class Bot(commands.AutoBot):
     def __init__(self, *, token_database: asqlite.Pool, subs: list[eventsub.SubscriptionPayload]) -> None:
         self.token_database = token_database

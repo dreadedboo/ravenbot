@@ -1,3 +1,5 @@
 [{
-
+    "Name": "ping",
+    "Response": "pong",
+    "Aliases": []
 }]
