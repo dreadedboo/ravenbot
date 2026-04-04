@@ -9,3 +9,5 @@ Ravenbot.pyproj
 /__pycache__/
 resources/config.json
 .gitattributes
+/utilities/__pycache__
+/components/__pycache__

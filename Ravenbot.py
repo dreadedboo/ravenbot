@@ -7,19 +7,17 @@ import asqlite
 import twitchio
 from twitchio import eventsub
 from twitchio.ext import commands
+from twitchio.ext.commands import CommandErrorPayload
 
-from components.CoreComp import MainComponent
 from components.CustomCommands import CustomCommands
+from utilities.FileUtils import openfile, parse_commands
 
 if TYPE_CHECKING:
     import sqlite3
 
-import json
-
 LOGGER: logging.Logger = logging.getLogger("bot")
 
-with open('resources/config.json', 'r', encoding='utf-8') as f:
-    config = json.load(f)
+config = openfile('resources/config.json')
 
 CLIENT_ID = config['CLIENT_ID']
 CLIENT_SECRET = config['CLIENT_SECRET']
@@ -52,8 +50,18 @@ class Bot(commands.AutoBot):
         )
 
     async def setup_hook(self) -> None:
-        await self.add_component(MainComponent(self))
         await self.add_component(CustomCommands(self))
+
+
+    async def event_command_error(self, payload: CommandErrorPayload) -> None:
+        if str(payload.exception).find("not found") != -1:
+            # if the error is command not found, check custom commands file for a match
+            cmds = openfile("resources/commands.json")
+            if parse_commands(payload.context.message.text[1:], cmds) is not None:
+                return None
+            # if no match throw error as normal
+            LOGGER.info('no matching command in file')
+        return await super().event_command_error(payload)
 
     async def event_oauth_authorized(self, payload: twitchio.authentication.UserTokenPayload) -> None:
         await self.add_token(payload.access_token, payload.refresh_token)

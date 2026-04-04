@@ -1,32 +1,32 @@
-import json
-
+import twitchio
 from twitchio.ext import commands
-import logging
 
-LOGGER: logging.Logger = logging.getLogger("bot")
+from utilities.FileUtils import openfile, parse_commands
+
+list_of_commands=[]
+
 
 class CustomCommands(commands.Component):
 
-    def __init__(self, bot: commands.AutoBot) -> None:
+    def __init__(self, bot) -> None:
+        self.list_of_cmds = list_of_commands
         self.bot = bot
+        self.custom_commands = openfile("resources/commands.json")
+        for c in self.custom_commands:
+            self.list_of_cmds.append(c["Name"])
+            for a in c["Aliases"]:
+                self.list_of_cmds.append(a)
+
+    # will add create_command, edit_command, delete_command,
+    # and other functions to this file, for now need to add to json manually
+
+    @commands.command(name="commands", invoke_fallback=True)
+    async def custom_cmds(self, ctx: commands.Context) -> None:
+        reply: str = "Available commands: " + str(self.list_of_cmds)
+        await ctx.send(reply)
 
     @commands.Component.listener()
-    # if a command sent in chat invokes an error, check if that error is "command not found"
-    async def event_command_error(self, payload):
-        if str(payload.exception).find("not found") != -1:
-            # if the error is command not found, check custom commands file for a match
-            with open('resources/commands.json', 'r', encoding='utf-8') as f:
-                cmds = json.load(f)
-            ch = [" "]
-            for c in cmds:
-                ch[0] = '!' + c["Name"]
-                for a in c["Aliases"]:
-                    ch.append('!' + a)
-                for k in ch:
-                    # if match is found, send reply in chat and bypass error
-                    if payload.context.message.text == k:
-                        await payload.context.send(c["Response"])
-                        return None
-            # if no match throw error as normal
-            LOGGER.info('no matching command in file')
-        return await self.bot.event_command_error(payload)
+    async def event_message(self, payload: twitchio.ChatMessage) -> None:
+        for a in self.list_of_cmds:
+            if payload.text == '!'+a:
+                await self.bot.get_context(payload).send(str(parse_commands(a, self.custom_commands)))
