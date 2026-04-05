@@ -2,6 +2,7 @@ self-hosted twitch bot
 
 planned features:
   - discord bot
+  - youtube bot
   - channel point component
   - alerts component (OBS integration)
   - moderation commands
