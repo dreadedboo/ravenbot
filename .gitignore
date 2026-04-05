@@ -12,3 +12,4 @@ bots/twitch/resources/config.json
 /utilities/__pycache__
 /bots/twitch/components/__pycache__
 /bots/twitch/__pycache__
+/bots/discord/__pycache__
