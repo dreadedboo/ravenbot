@@ -20,40 +20,49 @@ class CustomCommands(commands.Component):
 
     @commands.command(name="commands", invoke_fallback=True)
     async def custom_cmds(self, ctx: commands.Context, func: str = None, command_name: str = None, *result: str) -> None:
+        self.update_commands()
         user = ctx.author
-        channel = ctx.channel
         reply: str = "Available commands: " + str(self.list_of_cmds)
-        if func:
-            if user.moderator or user.broadcaster:
+        if user.moderator or user.broadcaster:
+            if func:
                 match func:
-                    case func if func == "add":
-                        if command_name:
-                            if result:
-                                response: str = concat_string_from_args(result)
-                                new_command: dict = {
-                                    "Name": command_name,
-                                    "Response": response,
-                                    "Aliases": []
-                                }
-                                append_file("resources/commands.json", new_command)
-                                self.update_commands()
-                                await ctx.send(f"Command '{command_name}' added successfully")
-                            else:
-                                await ctx.send(f"No response for '{command_name}' provided. Failed to add command")
-                        else:
-                            await ctx.send(f"No command name provided. Syntax for adding commands is !commands add <command_name> <response>")
-                    case func if func == 'help':
-                        await ctx.send(f"Available options for this command: add, edit, del, alias, cooldown, help")
-                    # case func if func == 'edit':
-                    #     return
-                    # case func if func == 'del':
-                    #     return
-                    # case func if func == 'alias':
-                    #     return
-                    # case func if func == 'cooldown' or 'cdown':
-                    #     return
+                    case func if func == "help":
+                        await ctx.send(f"Available options for this command are add, edit, del, alias, cooldown")
                     case _:
-                        await ctx.send(f"correct syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
+                        if command_name:
+                            if parse_commands(command_name, openfile("resources/commands.json")) is not None:
+                                match func:
+                                    case func if func == "del":
+                                        print("test")
+                                    case func if func == "edit":
+                                        print("test")
+                                    case func if func == "alias":
+                                        print("test")
+                                    case func if func == 'cooldown':
+                                        print("test")
+                                    case _:
+                                        if func == "add":
+                                            await ctx.send(f"Command '{command_name}' already exists")
+                                        else:
+                                            await ctx.send(f"Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
+                            else:
+                                if func == "add":
+                                    if result:
+                                        response: str = concat_string_from_args(result)
+                                        new_command: dict = {
+                                            "Name": command_name,
+                                            "Response": response,
+                                            "Aliases": []
+                                        }
+                                        append_file("resources/commands.json", new_command)
+                                        self.update_commands()
+                                        await ctx.send(f"Command '{command_name}' added successfully")
+                                    else:
+                                        await ctx.send(f"No response for '{command_name}' provided. Failed to add command")
+                                else:
+                                    await ctx.send(f"Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
+                        else:
+                            await ctx.send(f"No command name provided. Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
             else:
                 await ctx.send(reply)
         else:
