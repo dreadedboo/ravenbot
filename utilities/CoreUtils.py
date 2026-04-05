@@ -5,11 +5,14 @@ def openfile(filename) -> list:
         data = json.load(f)
     return data
 
+def writefile(data, filename) -> None:
+    with open(filename, "w")as outfile:
+        json.dump(data, outfile)
+
 def append_file(filename, to_append) -> None:
     data = openfile(filename)
     data.append(to_append)
-    with open(filename, "w")as outfile:
-        json.dump(data, outfile)
+    writefile(data, filename)
 
 def parse_commands(cmd, l):
     ch = []

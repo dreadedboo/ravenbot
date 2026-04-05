@@ -18,15 +18,16 @@ if TYPE_CHECKING:
 
 LOGGER: logging.Logger = logging.getLogger("bot")
 
-config = openfile('resources/config.json')
+config = openfile("resources/config.json")
 
-CLIENT_ID = config['CLIENT_ID']
-CLIENT_SECRET = config['CLIENT_SECRET']
+CLIENT_ID = config["CLIENT_ID"]
+CLIENT_SECRET = config["CLIENT_SECRET"]
 
+#convert usernames in config to user ids
 async def get_user_ids() -> list:
-    async with twitchio.Client(client_id=config['CLIENT_ID'], client_secret=config['CLIENT_SECRET']) as client:
+    async with twitchio.Client(client_id=config["CLIENT_ID"], client_secret=config["CLIENT_SECRET"]) as client:
         await client.login()
-        users = await client.fetch_users(logins=[config['BOT_UNAME'], config['OWNER_UNAME']])
+        users = await client.fetch_users(logins=[config["BOT_UNAME"], config["OWNER_UNAME"]])
         return users
 
 u = asyncio.run(get_user_ids())
@@ -50,10 +51,12 @@ class Bot(commands.AutoBot):
             force_subscribe=True,
         )
 
+    # add components and commands
     async def setup_hook(self) -> None:
         await self.add_component(CustomCommands(self))
         await self.add_component(CoreComp(self))
 
+    # override the builtin event_command_error listener to bypass errors when a command is in the custom commands file
     async def event_command_error(self, payload: CommandErrorPayload) -> None:
         if str(payload.exception).find("not found") != -1:
             # if the error is command not found, check custom commands file for a match
@@ -61,9 +64,10 @@ class Bot(commands.AutoBot):
             if parse_commands(payload.context.message.text[1:], cmds) is not None:
                 return None
             # if no match throw error as normal
-            LOGGER.info('no matching command in file')
+            LOGGER.info("no matching command in file")
         return await super().event_command_error(payload)
 
+    # twitchio quickstart oauth function
     async def event_oauth_authorized(self, payload: twitchio.authentication.UserTokenPayload) -> None:
         await self.add_token(payload.access_token, payload.refresh_token)
 
@@ -82,6 +86,7 @@ class Bot(commands.AutoBot):
         if resp.errors:
             LOGGER.warning("Failed to subscribe to: %r, for user: %s", resp.errors, payload.user_id)
 
+    # twitchio quickstart token function
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
         # Make sure to call super() as it will add the tokens interally and return us some data...
         resp: twitchio.authentication.ValidateTokenPayload = await super().add_token(token, refresh)
@@ -105,7 +110,7 @@ class Bot(commands.AutoBot):
     async def event_ready(self) -> None:
         LOGGER.info("Successfully logged in as: %s", self.bot_id)
 
-
+# twitchio quickstart database function
 async def setup_database(db: asqlite.Pool) -> tuple[list[tuple[str, str]], list[eventsub.SubscriptionPayload]]:
     # Create our token table, if it doesn't exist..
     # You should add the created files to .gitignore or potentially store them somewhere safer
@@ -150,7 +155,7 @@ def main() -> None:
     except KeyboardInterrupt:
         LOGGER.warning("Shutting down due to KeyboardInterrupt")
 
-
+# provide links in console when bot is run to get proper oauth for user and bot accounts
 if __name__ == "__main__":
     print("open the following link as bot account in your config file: "
           "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
