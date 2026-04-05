@@ -3,13 +3,11 @@ from twitchio.ext import commands
 
 from utilities.FileUtils import openfile, parse_commands
 
-list_of_commands=[]
-
 
 class CustomCommands(commands.Component):
 
     def __init__(self, bot) -> None:
-        self.list_of_cmds = list_of_commands
+        self.list_of_cmds = []
         self.bot = bot
         self.custom_commands = openfile("resources/commands.json")
         for c in self.custom_commands:
