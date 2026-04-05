@@ -1,4 +1,6 @@
-from twitchio import Game
+from datetime import datetime
+
+from twitchio import Game, User
 from twitchio.ext import commands
 
 
@@ -57,3 +59,17 @@ class CoreComp(commands.Component):
                 await ctx.send(f"Current title is: {channel_info.title}")
         else:
             await ctx.send(f"Current title is: {channel_info.title}")
+
+    @commands.command(name="followage")
+    async def followage(self, ctx: commands.Context, u: User = None) -> None:
+        user = u or ctx.author
+        follow_data = await ctx.channel.fetch_followers()
+        async for f in follow_data.followers:
+            if f.user == user:
+                followed = f.followed_at.replace(tzinfo=None)
+                delta = datetime.now().replace(tzinfo=None) - followed
+                years, days = divmod(delta.days, 365)
+                months, days = divmod(days, 30)
+                await ctx.send(f"@{user} has been following for {years} years, {months} months, and {days} days!")
+                return
+        await ctx.send(f"@{user} is not following this channel!")

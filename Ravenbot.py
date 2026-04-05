@@ -155,6 +155,6 @@ if __name__ == "__main__":
     print("open the following link as bot account in your config file: "
           "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
     print("open the following link as your actual account: "
-          "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast&force_verify=true")
+          "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderator:read:followers&force_verify=true")
     main()
 
