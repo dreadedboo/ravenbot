@@ -5,7 +5,9 @@ from twitchio.ext import commands
 
 from utilities.CoreUtils import concat_string_from_args
 from utilities.TwitchUtils import change_game
+from utilities.Logger import new_logger
 
+LOGGER = new_logger("twitch-bot: CoreComponent")
 
 class CoreComp(commands.Component):
 

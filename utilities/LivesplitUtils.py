@@ -1,7 +1,9 @@
 import socket
 
 from utilities.CoreUtils import openfile
+from utilities.Logger import new_logger
 
+LOGGER = new_logger("LivesplitUtils")
 config = openfile("resources/livesplit_server_cfg.json")
 
 HOST = config["host"]
@@ -14,19 +16,28 @@ def ping_livesplit_server():
             # Create socket and connect to LiveSplit Server
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((HOST, PORT))
+            LOGGER.info("Connected to livesplit server")
             return True
         except ConnectionRefusedError:
             x += 1
+    LOGGER.error("Failed to connect to Livesplit server")
     return False
 
 
-def send_command(command: str):
+def send_receive(command: str):
     try:
         # Create socket and connect to LiveSplit Server
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(5.0)
             s.connect((HOST, PORT))
-            s.sendall(f"{command}\r\n".encode('utf-8'))
-            data: str = s.recv(1024).decode('UTF-8')
+            try:
+                s.sendall(f"{command}\r\n".encode('utf-8'))
+                data: str = s.recv(1024).decode('UTF-8')
+            except TimeoutError:
+                LOGGER.error("Livesplit server connection timed out")
+                return False
+            LOGGER.info(f"Command: {command} ran successfully. Received: {data}")
         return data
-    except ConnectionError:
-        return None
+    except ConnectionRefusedError:
+        LOGGER.error("Failed to connect to Livesplit server")
+        return False

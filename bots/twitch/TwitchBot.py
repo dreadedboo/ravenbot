@@ -13,11 +13,12 @@ from bots.twitch.components.CoreComp import CoreComp
 from bots.twitch.components.CustomCommands import CustomCommands
 from bots.twitch.components.LivesplitComp import Livesplit
 from utilities.CoreUtils import openfile, parse_commands
+from utilities.Logger import new_logger
 
 if TYPE_CHECKING:
     import sqlite3
 
-LOGGER: logging.Logger = logging.getLogger("bot")
+LOGGER = new_logger("twitch-bot")
 
 config = openfile("resources/twitch_cfg.json")
 
@@ -51,6 +52,11 @@ class Bot(commands.AutoBot):
             subscriptions=subs,
             force_subscribe=True,
         )
+
+        LOGGER.info("open the following link as bot account in your config file: "
+                    "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
+        LOGGER.info("open the following link as your actual account: "
+                    "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderator:read:followers&force_verify=true")
 
     # add components and commands
     async def setup_hook(self) -> None:
@@ -140,10 +146,6 @@ async def setup_database(db: asqlite.Pool) -> tuple[list[tuple[str, str]], list[
 
 
 def main() -> None:
-    print("open the following link as bot account in your config file: "
-          "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
-    print("open the following link as your actual account: "
-          "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderator:read:followers&force_verify=true")
     twitchio.utils.setup_logging(level=logging.INFO)
 
     async def runner() -> None:
