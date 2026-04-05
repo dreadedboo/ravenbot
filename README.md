@@ -7,6 +7,7 @@ current features
   - json based config
 
 planned features:
+  - choose what components to load when bot is started for the first time with commands to load, unload, and reload. store last setup in json file
   - host from separate computer on your network, such as a raspberry pi
   - speedrun.com integration
   - ffz, bttv, 7tv integration
