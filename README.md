@@ -7,15 +7,14 @@ current features
   - json based config
 
 planned features:
-  - discord bot
-  - youtube bot
-  - channel point component
-  - OBS integration
-  - moderation commands
-  - quotes component
-  - emote management (7tv, ffz, bttv)
-  - sync extension emotes with discord (avoiding duplicates)
+  - host from separate computer on your network, such as a raspberry pi
+  - speedrun.com integration
+  - ffz, bttv, 7tv integration
+  - quotes
+  - moderation features
+  - discord bot with all above planned features and its own unique features
+  - ad warnings in twitch chat
+  - livesplit integration
+  - obs integration
+  - channel point rewards
   - stream marker and clip commands
-  - speedrun.com component
-  - music control (TidalLUNA)
-  - set game from livesplit
