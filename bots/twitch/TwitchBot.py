@@ -11,6 +11,7 @@ from twitchio.ext.commands import CommandErrorPayload
 
 from bots.twitch.components.CoreComp import CoreComp
 from bots.twitch.components.CustomCommands import CustomCommands
+from bots.twitch.components.LivesplitComp import Livesplit
 from utilities.CoreUtils import openfile, parse_commands
 
 if TYPE_CHECKING:
@@ -53,6 +54,7 @@ class Bot(commands.AutoBot):
 
     # add components and commands
     async def setup_hook(self) -> None:
+        await self.add_component(Livesplit(self))
         await self.add_component(CustomCommands(self))
         await self.add_component(CoreComp(self))
 

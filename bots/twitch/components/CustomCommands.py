@@ -1,8 +1,7 @@
 import twitchio
 from twitchio.ext import commands
 
-from utilities.CoreUtils import openfile, parse_commands, concat_string_from_args, append_file, writefile, \
-    remove_from_file
+from utilities.CoreUtils import openfile, parse_commands, concat_string_from_args, append_file, remove_from_file
 
 
 class CustomCommands(commands.Component):
