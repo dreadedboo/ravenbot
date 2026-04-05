@@ -13,7 +13,7 @@ class CustomCommands(commands.Component):
 
     def update_commands(self) -> None:
         self.list_of_cmds.clear()
-        for c in openfile("resources/commands.json"):
+        for c in openfile("bots/twitch/resources/commands.json"):
             self.list_of_cmds.append(c["Name"])
             for a in c["Aliases"]:
                 self.list_of_cmds.append(a)
@@ -30,7 +30,7 @@ class CustomCommands(commands.Component):
                         await ctx.send(f"Available options for this command are add, edit, del, alias, cooldown")
                     case _:
                         if command_name:
-                            if parse_commands(command_name, openfile("resources/commands.json")) is not None:
+                            if parse_commands(command_name, openfile("bots/twitch/resources/commands.json")) is not None:
                                 match func:
                                     case func if func == "del":
                                         print("test")
@@ -54,7 +54,7 @@ class CustomCommands(commands.Component):
                                             "Response": response,
                                             "Aliases": []
                                         }
-                                        append_file("resources/commands.json", new_command)
+                                        append_file("bots/twitch/resources/commands.json", new_command)
                                         self.update_commands()
                                         await ctx.send(f"Command '{command_name}' added successfully")
                                     else:
@@ -72,4 +72,4 @@ class CustomCommands(commands.Component):
     async def event_message(self, payload: twitchio.ChatMessage) -> None:
         for a in self.list_of_cmds:
             if payload.text == '!'+a:
-                await self.bot.get_context(payload).send(str(parse_commands(a, openfile("resources/commands.json"))))
+                await self.bot.get_context(payload).send(str(parse_commands(a, openfile("bots/twitch/resources/commands.json"))))

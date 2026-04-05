@@ -9,8 +9,8 @@ from twitchio import eventsub
 from twitchio.ext import commands
 from twitchio.ext.commands import CommandErrorPayload
 
-from components.CoreComp import CoreComp
-from components.CustomCommands import CustomCommands
+from bots.twitch.components.CoreComp import CoreComp
+from bots.twitch.components.CustomCommands import CustomCommands
 from utilities.CoreUtils import openfile, parse_commands
 
 if TYPE_CHECKING:
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 LOGGER: logging.Logger = logging.getLogger("bot")
 
-config = openfile("resources/config.json")
+config = openfile("bots/twitch/resources/config.json")
 
 CLIENT_ID = config["CLIENT_ID"]
 CLIENT_SECRET = config["CLIENT_SECRET"]
@@ -138,6 +138,10 @@ async def setup_database(db: asqlite.Pool) -> tuple[list[tuple[str, str]], list[
 
 
 def main() -> None:
+    print("open the following link as bot account in your config file: "
+          "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
+    print("open the following link as your actual account: "
+          "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderator:read:followers&force_verify=true")
     twitchio.utils.setup_logging(level=logging.INFO)
 
     async def runner() -> None:
@@ -156,10 +160,5 @@ def main() -> None:
         LOGGER.warning("Shutting down due to KeyboardInterrupt")
 
 # provide links in console when bot is run to get proper oauth for user and bot accounts
-if __name__ == "__main__":
-    print("open the following link as bot account in your config file: "
-          "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
-    print("open the following link as your actual account: "
-          "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderator:read:followers&force_verify=true")
-    main()
+
 
