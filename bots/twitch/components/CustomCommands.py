@@ -1,7 +1,8 @@
 import twitchio
 from twitchio.ext import commands
 
-from utilities.CoreUtils import openfile, parse_commands, concat_string_from_args, append_file
+from utilities.CoreUtils import openfile, parse_commands, concat_string_from_args, append_file, writefile, \
+    remove_from_file
 
 
 class CustomCommands(commands.Component):
@@ -9,11 +10,12 @@ class CustomCommands(commands.Component):
     def __init__(self, bot) -> None:
         self.bot = bot
         self.list_of_cmds = []
+        self.file = "bots/twitch/resources/commands.json"
         self.update_commands()
 
     def update_commands(self) -> None:
         self.list_of_cmds.clear()
-        for c in openfile("bots/twitch/resources/commands.json"):
+        for c in openfile(self.file):
             self.list_of_cmds.append(c["Name"])
             for a in c["Aliases"]:
                 self.list_of_cmds.append(a)
@@ -30,14 +32,40 @@ class CustomCommands(commands.Component):
                         await ctx.send(f"Available options for this command are add, edit, del, alias, cooldown")
                     case _:
                         if command_name:
-                            if parse_commands(command_name, openfile("bots/twitch/resources/commands.json")) is not None:
+                            c = parse_commands(command_name, openfile(self.file))
+                            if c is not None:
+                                data = openfile(self.file)
                                 match func:
                                     case func if func == "del":
-                                        print("test")
+                                        for a in data:
+                                            if a["Name"] == c["Name"]:
+                                                remove_from_file(self.file, a)
+                                                self.update_commands()
+                                                await ctx.send(f"Successfully deleted command: {command_name}")
+                                                return
+                                        await ctx.send(f"Failed to delete {command_name}, try again")
                                     case func if func == "edit":
-                                        print("test")
+                                        if result:
+                                            response: str = concat_string_from_args(result)
+                                            c["Response"] = response
+                                            for a in data:
+                                                if a["Name"] == c["Name"]:
+                                                    remove_from_file(self.file, a)
+                                                    append_file(self.file, c)
+                                                    self.update_commands()
+                                                    await ctx.send(f"Successfully edited command: {command_name}")
+                                                    return
+                                            await ctx.send(f"Failed to edit {command_name}, try again")
+                                        else:
+                                            await ctx.send(f"No response for '{command_name}' provided. Failed to edit command")
                                     case func if func == "alias":
-                                        print("test")
+                                        if result:
+                                            if result[0] == "add":
+                                                print("test")
+                                            elif result[0] == "del":
+                                                print("test")
+                                            else:
+                                                await ctx.send(f"Syntax: !commands alias <command_name> <add/del> <alias_name>")
                                     case func if func == 'cooldown':
                                         print("test")
                                     case _:
@@ -54,7 +82,7 @@ class CustomCommands(commands.Component):
                                             "Response": response,
                                             "Aliases": []
                                         }
-                                        append_file("bots/twitch/resources/commands.json", new_command)
+                                        append_file(self.file, new_command)
                                         self.update_commands()
                                         await ctx.send(f"Command '{command_name}' added successfully")
                                     else:
@@ -72,4 +100,6 @@ class CustomCommands(commands.Component):
     async def event_message(self, payload: twitchio.ChatMessage) -> None:
         for a in self.list_of_cmds:
             if payload.text == '!'+a:
-                await self.bot.get_context(payload).send(str(parse_commands(a, openfile("bots/twitch/resources/commands.json"))))
+                c = parse_commands(a, openfile(self.file))
+                if c is not None:
+                    await self.bot.get_context(payload).send(c["Response"])

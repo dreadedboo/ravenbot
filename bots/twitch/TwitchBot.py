@@ -60,7 +60,7 @@ class Bot(commands.AutoBot):
     async def event_command_error(self, payload: CommandErrorPayload) -> None:
         if str(payload.exception).find("not found") != -1:
             # if the error is command not found, check custom commands file for a match
-            cmds = openfile("resources/commands.json")
+            cmds = openfile("bots/twitch/resources/commands.json")
             if parse_commands(payload.context.message.text[1:], cmds) is not None:
                 return None
             # if no match throw error as normal
