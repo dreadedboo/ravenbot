@@ -3,17 +3,7 @@ from datetime import datetime
 from twitchio import Game, User
 from twitchio.ext import commands
 
-
-def concat_string_from_args(t: tuple) -> str:
-    s = ""
-    c = 0
-    for a in t:
-        if c == len(t) - 1:
-            s += a
-        else:
-            c += 1
-            s += (a + " ")
-    return s
+from utilities.CoreUtils import concat_string_from_args
 
 
 class CoreComp(commands.Component):

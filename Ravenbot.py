@@ -11,7 +11,7 @@ from twitchio.ext.commands import CommandErrorPayload
 
 from components.CoreComp import CoreComp
 from components.CustomCommands import CustomCommands
-from utilities.FileUtils import openfile, parse_commands
+from utilities.CoreUtils import openfile, parse_commands
 
 if TYPE_CHECKING:
     import sqlite3
