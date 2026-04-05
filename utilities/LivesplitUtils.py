@@ -1,12 +1,19 @@
 import socket
 
+from utilities.CoreUtils import openfile
+
+config = openfile("resources/livesplit_server_cfg.json")
+
+HOST = config["host"]
+PORT = config["port"]
+
 def ping_livesplit_server():
     x = 0
     while x < 6:
         try:
             # Create socket and connect to LiveSplit Server
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect(("localhost", 16834))
+                s.connect((HOST, PORT))
             return True
         except ConnectionRefusedError:
             x += 1
@@ -17,7 +24,7 @@ def send_command(command: str):
     try:
         # Create socket and connect to LiveSplit Server
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(("localhost", 16834))
+            s.connect((HOST, PORT))
             s.sendall(f"{command}\r\n".encode('utf-8'))
             data: str = s.recv(1024).decode('UTF-8')
         return data

@@ -1,4 +1,4 @@
-bots/twitch/resources/commands.json
+resources/twitch_cmds.json
 tokens.db
 tokens.db-shm
 tokens.db-wal
@@ -7,9 +7,10 @@ Ravenbot.pyproj
 /.venv/
 /.idea/
 /__pycache__/
-bots/twitch/resources/config.json
+resources/twitch_cfg.json
 .gitattributes
 /utilities/__pycache__
 /bots/twitch/components/__pycache__
 /bots/twitch/__pycache__
 /bots/discord/__pycache__
+resources/livesplit_server_cfg.json

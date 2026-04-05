@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 LOGGER: logging.Logger = logging.getLogger("bot")
 
-config = openfile("bots/twitch/resources/config.json")
+config = openfile("resources/twitch_cfg.json")
 
 CLIENT_ID = config["CLIENT_ID"]
 CLIENT_SECRET = config["CLIENT_SECRET"]
@@ -62,7 +62,7 @@ class Bot(commands.AutoBot):
     async def event_command_error(self, payload: CommandErrorPayload) -> None:
         if str(payload.exception).find("not found") != -1:
             # if the error is command not found, check custom commands file for a match
-            cmds = openfile("bots/twitch/resources/commands.json")
+            cmds = openfile("resources/twitch_cmds.json")
             if parse_commands(payload.context.message.text[1:], cmds) is not None:
                 return None
             # if no match throw error as normal

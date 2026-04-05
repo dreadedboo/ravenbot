@@ -9,7 +9,7 @@ class CustomCommands(commands.Component):
     def __init__(self, bot) -> None:
         self.bot = bot
         self.list_of_cmds = []
-        self.file = "bots/twitch/resources/commands.json"
+        self.file = "resources/twitch_cmds.json"
         self.update_commands()
 
     def update_commands(self) -> None:
