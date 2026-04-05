@@ -6,7 +6,6 @@ current features
   - custom commands and management
   - json based config
   - basic livesplit integration with config file for if running on separate computer
-  - host from separate computer on your network, such as a raspberry pi
 
 planned features:
   - choose what components to load when bot is started for the first time with commands to load, unload, and reload. store last setup in json file
