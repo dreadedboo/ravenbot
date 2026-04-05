@@ -10,7 +10,6 @@ current features
 
 planned features:
   - choose what components to load when bot is started for the first time with commands to load, unload, and reload. store last setup in json file
-  - 
   - speedrun.com integration
   - ffz, bttv, 7tv integration
   - quotes
