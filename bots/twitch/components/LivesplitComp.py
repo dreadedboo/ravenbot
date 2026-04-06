@@ -1,31 +1,20 @@
 from twitchio.ext import commands
 
-from utilities.LivesplitUtils import ping_livesplit_server, send_receive
+from utilities.LivesplitUtils import LivesplitConnection
 from utilities.CoreUtils import logger
 from utilities.TwitchUtils import change_game, change_title
 
 LOGGER = logger("twitch-bot: Livesplit")
 
-# a lot of the possible commands for livesplit just return a time
-# any commands that return a time in this component will just call this function
-async def get_time_from_livesplit(ctx: commands.Context, command: str, message: str):
-    if ping_livesplit_server():
-        time = send_receive(command)
-        if time:
-            await ctx.send(f"{message}{time[:11]}")
-    else:
-        await ctx.send("Could not connect to livesplit")
-
-
 class Livesplit(commands.Component):
 
     def __init__(self, bot) -> None:
         self.bot = bot
-        ping_livesplit_server()
+        self.sckt = LivesplitConnection()
 
     @commands.group(name="livesplit", aliases=["lsplit"])
     async def livesplit(self, ctx: commands.Context, func: str = None) -> None:
-        if ping_livesplit_server():
+        if self.sckt.get_string("ping") == "pong":
             await ctx.send("Currently connected to livesplit. Available commands: !pb !bpt !sob")
         else:
             await ctx.send("Could not connect to livesplit")
@@ -34,9 +23,9 @@ class Livesplit(commands.Component):
     @commands.is_moderator()
     @livesplit.command(name="game")
     async def set_game_from_splits(self, ctx: commands.Context) -> None:
-        game_name = send_receive("getgamename")
+        game_name = self.sckt.get_string("getgamename")
         if game_name is not False:
-            await change_game(self.bot, ctx, game_name[:-1])
+            await change_game(self.bot, ctx, str(game_name))
         else:
             await ctx.send("Failed to receive data from Livesplit")
             LOGGER.error("Failed to receive data from Livesplit")
@@ -44,10 +33,10 @@ class Livesplit(commands.Component):
     @commands.is_moderator()
     @livesplit.command(name="title")
     async def set_title_from_category(self, ctx: commands.Context) -> None:
-        game_name = send_receive("getgamename")
-        category = send_receive("getcategoryname")
+        game_name = self.sckt.get_string("getgamename")
+        category = self.sckt.get_string("getcategoryname")
         if game_name is not False and category is not False:
-            title: str = f"{game_name[:-1]} - {category[:-1]}"
+            title: str = f"{game_name} - {category}"
             await change_title(self.bot, ctx, title)
         else:
             await ctx.send("Failed to receive data from Livesplit")
@@ -61,14 +50,17 @@ class Livesplit(commands.Component):
 
     @commands.command(name="pb")
     async def get_personal_best(self, ctx: commands.Context) -> None:
-        await get_time_from_livesplit(ctx, "getfinaltime Personal Best","Current splits PB: ")
+        reply = self.sckt.get_time("getfinaltime Personal Best")
         # this command will also get leaderboard PB from SRC
+        await ctx.send(f"Splits PB: {reply}")
 
     @commands.command(name="bpt")
     async def get_bpt(self, ctx: commands.Context) -> None:
-        await get_time_from_livesplit(ctx, "getbestpossibletime", "Best Possible Time: ")
+        reply = self.sckt.get_time("getbestpossibletime")
+        await ctx.send(f"Best Possible Time: {reply}")
 
     @commands.command(name="sob")
     async def get_sob(self, ctx: commands.Context) -> None:
-        await get_time_from_livesplit(ctx, "getfinaltime Best Segments", "Sum of Best: ")
+        reply = self.sckt.get_time("getfinaltime Best Segments")
+        await ctx.send(f"Sum of Best: {reply}")
 
