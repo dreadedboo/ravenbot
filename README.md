@@ -5,7 +5,7 @@ current features
   - followage command
   - custom commands and management
   - json based config
-  - basic livesplit integration with config file for if running on separate computer
+  - livesplit integration
 
 planned features:
   - choose what components to load when bot is started for the first time with commands to load, unload, and reload. store last setup in json file
