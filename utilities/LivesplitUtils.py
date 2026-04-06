@@ -1,9 +1,8 @@
 import socket
 
-from utilities.CoreUtils import openfile
-from utilities.Logger import new_logger
+from utilities.CoreUtils import openfile, logger
 
-LOGGER = new_logger("LivesplitUtils")
+LOGGER = logger("LivesplitUtils")
 config = openfile("resources/livesplit_server_cfg.json")
 
 HOST = config["host"]

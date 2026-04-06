@@ -1,10 +1,15 @@
 import twitchio
 from twitchio.ext import commands
 
-from utilities.CoreUtils import openfile, parse_commands, concat_string_from_args, append_file, remove_from_file
-from utilities.Logger import new_logger
+from utilities.CoreUtils import (
+    openfile,
+    parse_commands,
+    concat_string_from_args,
+    append_file,
+    remove_from_file,
+    logger)
 
-LOGGER = new_logger("twitch-bot: CustomCommands")
+LOGGER = logger("twitch-bot: CustomCommands")
 
 class CustomCommands(commands.Component):
 

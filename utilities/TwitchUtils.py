@@ -1,7 +1,7 @@
 from twitchio.ext import commands
-from utilities.Logger import new_logger
+from utilities.CoreUtils import logger
 
-LOGGER = new_logger("TwitchUtils")
+LOGGER = logger("TwitchUtils")
 
 async def change_game(bot, ctx: commands.Context, game_name: str) -> None:
     channel = ctx.channel

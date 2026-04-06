@@ -1,7 +1,11 @@
 import json
-from utilities.Logger import new_logger
+import logging
 
-LOGGER = new_logger("CoreUtils")
+
+def logger(name: str) -> logging.Logger:
+    return logging.getLogger(name)
+
+LOGGER = logger("CoreUtils")
 
 # open a file to read
 def openfile(filename) -> list:

@@ -1,9 +1,9 @@
 from twitchio.ext import commands
 
 from utilities.LivesplitUtils import ping_livesplit_server, send_receive
-from utilities.Logger import new_logger
+from utilities.CoreUtils import logger
 
-LOGGER = new_logger("twitch-bot: Livesplit")
+LOGGER = logger("twitch-bot: Livesplit")
 
 # a lot of the possible commands for livesplit just return a time
 # any commands that return a time in this component will just call this function

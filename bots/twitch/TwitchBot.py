@@ -12,13 +12,12 @@ from twitchio.ext.commands import CommandErrorPayload
 from bots.twitch.components.CoreComp import CoreComp
 from bots.twitch.components.CustomCommands import CustomCommands
 from bots.twitch.components.LivesplitComp import Livesplit
-from utilities.CoreUtils import openfile, parse_commands
-from utilities.Logger import new_logger
+from utilities.CoreUtils import openfile, parse_commands, logger
 
 if TYPE_CHECKING:
     import sqlite3
 
-LOGGER = new_logger("twitch-bot")
+LOGGER = logger("twitch-bot")
 
 config = openfile("resources/twitch_cfg.json")
 
