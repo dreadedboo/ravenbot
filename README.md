@@ -18,7 +18,6 @@
   - obs integration
   - quotes
   - moderation features
-  - documentation/wiki
 
 ## planned discord features:
   - discord bot
