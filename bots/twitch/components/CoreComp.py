@@ -18,8 +18,9 @@ class CoreComp(commands.Component):
         channel_info = await ctx.channel.fetch_channel_info()
         # check if a game was provided
         if g:
-            game_name = concat_string_from_args(g)
-            await change_game(self.bot, ctx, game_name)
+            if ctx.author.moderator or ctx.author.broadcaster:
+                game_name = concat_string_from_args(g)
+                await change_game(self.bot, ctx, game_name)
         else:
             await ctx.send(f"Current game is: {channel_info.game_name}")
 
@@ -28,8 +29,9 @@ class CoreComp(commands.Component):
         channel_info = await ctx.channel.fetch_channel_info()
         # check if a title was provided
         if t:
-            title = concat_string_from_args(t)
-            await change_title(self.bot, ctx, title)
+            if ctx.author.moderator or ctx.author.broadcaster:
+                title = concat_string_from_args(t)
+                await change_title(self.bot, ctx, title)
         else:
             await ctx.send(f"Current title is: {channel_info.title}")
 

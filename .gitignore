@@ -12,3 +12,4 @@ tokens.db
 tokens.db-shm
 tokens.db-wal
 .tio.tokens.json
+resources/obs_cfg.json

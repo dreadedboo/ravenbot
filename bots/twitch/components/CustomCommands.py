@@ -27,88 +27,80 @@ class CustomCommands(commands.Component):
                 self.list_of_cmds.append(a)
         LOGGER.info(f"Loaded commands from {self.file}: {self.list_of_cmds}")
 
-    @commands.command(name="commands", invoke_fallback=True)
-    async def custom_cmds(self, ctx: commands.Context, func: str = None, command_name: str = None, *result: str) -> None:
+    @commands.group(name="commands", invoke_fallback=True)
+    async def custom_cmds(self, ctx: commands.Context, func: str = None, ) -> None:
         self.update_commands()
-        user = ctx.author
         reply: str = "Available commands: " + str(self.list_of_cmds)
-        if user.moderator or user.broadcaster:
-            if func:
-                match func:
-                    case func if func == "help":
-                        await ctx.send(f"Available options for this command are add, edit, del, alias, cooldown")
-                    case _:
-                        if command_name:
-                            c = parse_commands(command_name, openfile(self.file))
-                            if c is not None:
-                                data = openfile(self.file)
-                                match func:
-                                    case func if func == "del":
-                                        for a in data:
-                                            if a["Name"] == c["Name"]:
-                                                remove_from_file(self.file, a)
-                                                self.update_commands()
-                                                await ctx.send(f"Successfully deleted command: {command_name}")
-                                                LOGGER.info(f"Deleted {command_name} from {self.file}")
-                                                return
-                                        await ctx.send(f"Failed to delete {command_name}, try again")
-                                        LOGGER.warning(f"Failed to delete {command_name} from {self.file}")
-                                    case func if func == "edit":
-                                        if result:
-                                            response: str = concat_string_from_args(result)
-                                            c["Response"] = response
-                                            for a in data:
-                                                if a["Name"] == c["Name"]:
-                                                    remove_from_file(self.file, a)
-                                                    append_file(self.file, c)
-                                                    self.update_commands()
-                                                    await ctx.send(f"Successfully edited command: {command_name}")
-                                                    LOGGER.info(f"Edited in {command_name} in {self.file}")
-                                                    return
-                                            await ctx.send(f"Failed to edit {command_name}, try again")
-                                            LOGGER.warning(f"Failed to edit {command_name} in {self.file}")
-                                        else:
-                                            await ctx.send(f"No response for '{command_name}' provided. Failed to edit command")
-                                            LOGGER.warning(f"Failed to edit {command_name} in {self.file}")
-                                    case func if func == "alias":
-                                        if result:
-                                            if result[0] == "add":
-                                                print("test")
-                                            elif result[0] == "del":
-                                                print("test")
-                                            else:
-                                                await ctx.send(f"Syntax: !commands alias <command_name> <add/del> <alias_name>")
-                                    case func if func == 'cooldown':
-                                        print("test")
-                                    case _:
-                                        if func == "add":
-                                            await ctx.send(f"Command '{command_name}' already exists")
-                                            LOGGER.warning(f"{command_name} already exists in {self.file}")
-                                        else:
-                                            await ctx.send(f"Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
-                            else:
-                                if func == "add":
-                                    if result:
-                                        response: str = concat_string_from_args(result)
-                                        new_command: dict = {
-                                            "Name": command_name,
-                                            "Response": response,
-                                            "Aliases": []
-                                        }
-                                        append_file(self.file, new_command)
-                                        self.update_commands()
-                                        await ctx.send(f"Command '{command_name}' added successfully")
-                                    else:
-                                        await ctx.send(f"No response for '{command_name}' provided. Failed to add command")
-                                        LOGGER.warning(f"Failed to add {command_name} to {self.file}")
-                                else:
-                                    await ctx.send(f"Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
-                        else:
-                            await ctx.send(f"No command name provided. Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
+        await ctx.send(reply)
+
+    @commands.is_moderator()
+    @custom_cmds.command(name="add")
+    async def add_command(self, ctx: commands.Context, command_name: str, *result: str) -> None:
+        if command_name:
+            c = parse_commands(command_name, openfile(self.file))
+            if c is None:
+                if result:
+                    response: str = concat_string_from_args(result)
+                    new_command: dict = {
+                        "Name": command_name,
+                        "Response": response,
+                        "Aliases": []
+                    }
+                    append_file(self.file, new_command)
+                    self.update_commands()
+                    await ctx.send(f"Command '{command_name}' added successfully")
+                else:
+                    await ctx.send(f"No response for '{command_name}' provided. Failed to add command")
+                    LOGGER.warning(f"Failed to add {command_name} to {self.file}")
             else:
-                await ctx.send(reply)
+                await ctx.send(f"Command '{command_name}' already exists")
         else:
-            await ctx.send(reply)
+            await ctx.send(f"No command name provided. Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
+
+    @commands.is_moderator()
+    @custom_cmds.command(name="delete", aliases=["del"])
+    async def del_command(self, ctx: commands.Context, command_name: str) -> None:
+        if command_name:
+            c = parse_commands(command_name, openfile(self.file))
+            if c is not None:
+                data = openfile(self.file)
+                for a in data:
+                    if a["Name"] == c["Name"]:
+                        remove_from_file(self.file, a)
+                        self.update_commands()
+                        await ctx.send(f"Successfully deleted command: {command_name}")
+                        LOGGER.info(f"Deleted {command_name} from {self.file}")
+                        return
+                await ctx.send(f"Failed to delete {command_name}, try again")
+                LOGGER.warning(f"Failed to delete {command_name} from {self.file}")
+            else:
+                await ctx.send(f"Command '{command_name}' does not exist")
+
+    @commands.is_moderator()
+    @custom_cmds.command(name="edit")
+    async def edit_command(self, ctx: commands.Context, command_name: str = None, *result: str) -> None:
+        if command_name:
+            c = parse_commands(command_name, openfile(self.file))
+            if c is not None:
+                data = openfile(self.file)
+                if result:
+                    response: str = concat_string_from_args(result)
+                    c["Response"] = response
+                    for a in data:
+                        if a["Name"] == c["Name"]:
+                            remove_from_file(self.file, a)
+                            append_file(self.file, c)
+                            self.update_commands()
+                            await ctx.send(f"Successfully edited command: {command_name}")
+                            LOGGER.info(f"Edited in {command_name} in {self.file}")
+                            return
+                    await ctx.send(f"Failed to edit {command_name}, try again")
+                    LOGGER.warning(f"Failed to edit {command_name} in {self.file}")
+                else:
+                    await ctx.send(f"No response for '{command_name}' provided. Failed to edit command")
+                    LOGGER.warning(f"Failed to edit {command_name} in {self.file}")
+            else:
+                await ctx.send(f"Command '{command_name}' does not exist")
 
     @commands.Component.listener()
     async def event_message(self, payload: twitchio.ChatMessage) -> None:

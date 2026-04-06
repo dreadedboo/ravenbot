@@ -23,37 +23,41 @@ class Livesplit(commands.Component):
         self.bot = bot
         ping_livesplit_server()
 
-    @commands.command(name="livesplit", aliases=["lsplit"])
+    @commands.group(name="livesplit", aliases=["lsplit"])
     async def livesplit(self, ctx: commands.Context, func: str = None) -> None:
-        # only pings livesplit for now
         if ping_livesplit_server():
-            # this command will eventually include the ability to set stream game to game name from livesplit for moderators
-            if func:
-                game_name = send_receive("getgamename")
-                category = send_receive("getcategoryname")
-                if game_name is not False:
-                    match func:
-                        case func if func == "game":
-                            await change_game(self.bot, ctx, game_name[:-1])
-                        case func if func == "title" or func == "category":
-                            if category is not False:
-                                title: str = f"{game_name[:-1]} - {category[:-1]}"
-                                await change_title(self.bot, ctx, title)
-                        case func if func == "setup":
-                            await change_game(self.bot, ctx, game_name[:-1])
-                            if category is not False:
-                                title: str = f"{game_name[:-1]} - {category[:-1]}"
-                                await change_title(self.bot, ctx, title)
-                        case _:
-                            await ctx.send("Currently connected to livesplit. Available commands: !pb !bpt !sob")
-                else:
-                    await ctx.send("Failed to receive data from Livesplit")
-                    LOGGER.error("Failed to receive data from Livesplit")
-            else:
-                await ctx.send("Currently connected to livesplit. Available commands: !pb !bpt !sob")
+            await ctx.send("Currently connected to livesplit. Available commands: !pb !bpt !sob")
         else:
             await ctx.send("Could not connect to livesplit")
             LOGGER.info("Could not connect to livesplit")
+
+    @commands.is_moderator()
+    @livesplit.command(name="game")
+    async def set_game_from_splits(self, ctx: commands.Context) -> None:
+        game_name = send_receive("getgamename")
+        if game_name is not False:
+            await change_game(self.bot, ctx, game_name[:-1])
+        else:
+            await ctx.send("Failed to receive data from Livesplit")
+            LOGGER.error("Failed to receive data from Livesplit")
+
+    @commands.is_moderator()
+    @livesplit.command(name="title")
+    async def set_title_from_category(self, ctx: commands.Context) -> None:
+        game_name = send_receive("getgamename")
+        category = send_receive("getcategoryname")
+        if game_name is not False and category is not False:
+            title: str = f"{game_name[:-1]} - {category[:-1]}"
+            await change_title(self.bot, ctx, title)
+        else:
+            await ctx.send("Failed to receive data from Livesplit")
+            LOGGER.error("Failed to receive data from Livesplit")
+
+    @commands.is_moderator()
+    @livesplit.command(name="setup")
+    async def set_game_and_title(self, ctx: commands.Context):
+        await self.set_game_from_splits(ctx)
+        await self.set_title_from_category(ctx)
 
     @commands.command(name="pb")
     async def get_personal_best(self, ctx: commands.Context) -> None:

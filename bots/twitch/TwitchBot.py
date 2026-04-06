@@ -12,6 +12,7 @@ from twitchio.ext.commands import CommandErrorPayload
 from bots.twitch.components.CoreComp import CoreComp
 from bots.twitch.components.CustomCommands import CustomCommands
 from bots.twitch.components.LivesplitComp import Livesplit
+from bots.twitch.components.OBSComponent import OBSComp
 from utilities.CoreUtils import openfile, parse_commands, logger
 
 if TYPE_CHECKING:
@@ -61,6 +62,7 @@ class Bot(commands.AutoBot):
     async def setup_hook(self) -> None:
         await self.add_component(Livesplit(self))
         await self.add_component(CustomCommands(self))
+        await self.add_component(OBSComp(self))
         await self.add_component(CoreComp(self))
 
     # override the builtin event_command_error listener to bypass errors when a command is in the custom commands file
