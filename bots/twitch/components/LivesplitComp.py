@@ -31,8 +31,8 @@ class Livesplit(commands.Component):
         if ping_livesplit_server():
             # this command will eventually include the ability to set stream game to game name from livesplit for moderators
             if func:
-                game_name = send_receive("getcurrentgame")
-                category = send_receive("getcurrentcategory")
+                game_name = send_receive("getgamename")
+                category = send_receive("getcategoryname")
                 if game_name is not False:
                     match func:
                         case func if func == "game":
