@@ -1,4 +1,3 @@
-from twitchio import Chatter
 from twitchio.ext import commands
 from utilities.CoreUtils import logger
 
