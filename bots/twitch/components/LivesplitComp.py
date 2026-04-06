@@ -31,7 +31,11 @@ class Livesplit(commands.Component):
                 if ctx.author.moderator or ctx.author.broadcaster:
                     match func:
                         case func if func == "game":
-                            print(send_receive("getcurrentgamename"))
+                            g = send_receive("getcurrentgamename")
+                            if g is not False:
+                                print(g)
+                            else:
+                                LOGGER.error("Failed to receive data from Livesplit")
                         case _:
                             await ctx.send("Currently connected to livesplit. Available commands: !pb !bpt !sob")
                 else:
