@@ -62,7 +62,7 @@ class Livesplit(commands.Component):
     @commands.command(name="pb")
     async def get_personal_best(self, ctx: commands.Context) -> None:
         await get_time_from_livesplit(ctx, "getfinaltime Personal Best","Current splits PB: ")
-        # this command will also get leaderboard PB from SRC once livesplit server can return game name to have command also search SRC runs
+        # this command will also get leaderboard PB from SRC
 
     @commands.command(name="bpt")
     async def get_bpt(self, ctx: commands.Context) -> None:
