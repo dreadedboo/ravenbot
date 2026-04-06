@@ -1,5 +1,3 @@
-from collections.abc import tuple_iterator
-
 from twitchio.ext import commands
 
 from utilities.LivesplitUtils import ping_livesplit_server, send_receive
