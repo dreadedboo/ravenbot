@@ -4,7 +4,7 @@ from twitchio import User
 from twitchio.ext import commands
 
 from utilities.CoreUtils import concat_string_from_args, logger
-from utilities.TwitchUtils import change_game
+from utilities.TwitchUtils import change_game, change_title
 
 LOGGER = logger("twitch-bot: CoreComponent")
 
@@ -15,9 +15,7 @@ class CoreComp(commands.Component):
 
     @commands.command(name="game", aliases=["setgame"])
     async def game_command(self, ctx: commands.Context, *g: str) -> None:
-        user = ctx.author
-        channel = ctx.channel
-        channel_info = await channel.fetch_channel_info()
+        channel_info = await ctx.channel.fetch_channel_info()
         # check if a game was provided
         if g:
             game_name = concat_string_from_args(g)
@@ -27,18 +25,11 @@ class CoreComp(commands.Component):
 
     @commands.command(name="title", aliases=["settitle"])
     async def title_command(self, ctx: commands.Context, *t: str) -> None:
-        user = ctx.author
-        channel = ctx.channel
-        channel_info = await channel.fetch_channel_info()
+        channel_info = await ctx.channel.fetch_channel_info()
         # check if a title was provided
         if t:
-            # check if user is moderator
-            if user.moderator or user.broadcaster:
-                title = concat_string_from_args(t)
-                await channel.modify_channel(title=title)
-                await ctx.send(f"Title successfully changed to: {title}")
-            else:
-                await ctx.send(f"Current title is: {channel_info.title}")
+            title = concat_string_from_args(t)
+            await change_title(self.bot, ctx, title)
         else:
             await ctx.send(f"Current title is: {channel_info.title}")
 
