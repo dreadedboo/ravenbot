@@ -35,7 +35,7 @@ def send_receive(command: str):
             except TimeoutError:
                 LOGGER.error("Livesplit server connection timed out")
                 return False
-            LOGGER.info(f"Command: {command} ran successfully. Received: {data}")
+            LOGGER.info(f"Command: {command} ran successfully. Received: {data[:-1]}")
         return data
     except ConnectionRefusedError:
         LOGGER.error("Failed to connect to Livesplit server")

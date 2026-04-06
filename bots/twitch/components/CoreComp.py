@@ -20,12 +20,8 @@ class CoreComp(commands.Component):
         channel_info = await channel.fetch_channel_info()
         # check if a game was provided
         if g:
-            # check if user is moderator
-            if user.moderator or user.broadcaster:
-                game_name = concat_string_from_args(g)
-                await change_game(self.bot, ctx, game_name)
-            else:
-                await ctx.send(f"Current game is: {channel_info.game_name}")
+            game_name = concat_string_from_args(g)
+            await change_game(self.bot, ctx, game_name)
         else:
             await ctx.send(f"Current game is: {channel_info.game_name}")
 
