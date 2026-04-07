@@ -1,1 +1,7 @@
-[{"Name": "ping", "Response": "pong", "Aliases": []}]
+[
+  {
+    "Name": "ping",
+    "Response": "pong",
+    "Aliases": []
+  }
+]

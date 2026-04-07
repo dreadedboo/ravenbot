@@ -8,6 +8,7 @@ from utilities.TwitchUtils import change_game, change_title, check_mod
 
 LOGGER = logger("twitch-bot: CoreComponent")
 
+
 class CoreComp(commands.Component):
 
     def __init__(self, bot) -> None:

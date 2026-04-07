@@ -6,14 +6,15 @@ from utilities.TwitchUtils import change_game, change_title
 
 LOGGER = logger("twitch-bot: Livesplit")
 
+
 class Livesplit(commands.Component):
 
     def __init__(self, bot) -> None:
         self.bot = bot
         self.livesplit = LivesplitConnection()
 
-    @commands.group(name="livesplit", aliases=["lsplit"])
-    async def lsplit(self, ctx: commands.Context, func: str = None) -> None:
+    @commands.group(name="livesplit", aliases=["lsplit"], invoke_fallback=True)
+    async def lsplit(self, ctx: commands.Context) -> None:
         if self.livesplit.get_string("ping") == "pong":
             await ctx.send("Currently connected to livesplit. Available commands: !pb !bpt !sob")
         else:
@@ -48,7 +49,6 @@ class Livesplit(commands.Component):
         await self.set_game_from_splits(ctx)
         await self.set_title_from_category(ctx)
 
-
     @commands.is_moderator()
     @lsplit.command(name="connect")
     async def connect_to_server(self, ctx: commands.Context) -> None:
@@ -66,7 +66,6 @@ class Livesplit(commands.Component):
             LOGGER.error("Failed to receive data from Livesplit")
         # this command will also get leaderboard PB from SRC
 
-
     @commands.command(name="bpt")
     async def get_bpt(self, ctx: commands.Context) -> None:
         reply = self.livesplit.get_string("getbestpossibletime")
@@ -75,7 +74,6 @@ class Livesplit(commands.Component):
         else:
             await ctx.send("Failed to receive data from Livesplit")
             LOGGER.error("Failed to receive data from Livesplit")
-
 
     @commands.command(name="sob")
     async def get_sob(self, ctx: commands.Context) -> None:

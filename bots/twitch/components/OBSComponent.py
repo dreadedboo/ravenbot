@@ -13,7 +13,7 @@ class OBSComp(commands.Component):
         self.cl = connect_to_obs()
 
     @commands.is_moderator()
-    @commands.group(name="obs")
+    @commands.group(name="obs", invoke_fallback=True)
     async def obs_main(self, ctx: commands.Context) -> None:
         try:
             self.cl.get_version()

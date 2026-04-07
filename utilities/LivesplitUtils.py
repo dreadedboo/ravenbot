@@ -8,6 +8,7 @@ config = openfile("resources/livesplit_server_cfg.json")
 HOST = config["host"]
 PORT = config["port"]
 
+
 class LivesplitConnection(socket):
 
     def __init__(self):

@@ -6,10 +6,10 @@ from utilities.TwitchUtils import check_vip
 
 LOGGER = logger("twitch-bot: ModComponent")
 
+
 class ModComp(commands.Component):
     def __init__(self, bot):
         self.bot = bot
-
 
     @commands.is_moderator()
     @commands.group(name="vip", invoke_fallback=True)

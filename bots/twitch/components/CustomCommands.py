@@ -11,6 +11,7 @@ from utilities.CoreUtils import (
 
 LOGGER = logger("twitch-bot: CustomCommands")
 
+
 class CustomCommands(commands.Component):
 
     def __init__(self, bot) -> None:
@@ -55,7 +56,8 @@ class CustomCommands(commands.Component):
             else:
                 await ctx.send(f"Command '{command_name}' already exists")
         else:
-            await ctx.send(f"No command name provided. Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
+            await ctx.send(
+                f"No command name provided. Syntax: !commands <add/edit/del/alias/cooldown> <command_name> <response>")
 
     @commands.is_moderator()
     @custom_cmds.command(name="delete", aliases=["del"])
@@ -105,7 +107,7 @@ class CustomCommands(commands.Component):
     @commands.Component.listener()
     async def event_message(self, payload: twitchio.ChatMessage) -> None:
         for a in self.list_of_cmds:
-            if payload.text == '!'+a:
+            if payload.text == '!' + a:
                 c = parse_commands(a, openfile(self.file))
                 if c is not None:
                     await self.bot.get_context(payload).send(c["Response"])

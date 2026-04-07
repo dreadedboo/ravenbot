@@ -26,17 +26,20 @@ config = openfile("resources/twitch_cfg.json")
 CLIENT_ID = config["CLIENT_ID"]
 CLIENT_SECRET = config["CLIENT_SECRET"]
 
-#convert usernames in config to user ids
+
+# convert usernames in config to user ids
 async def get_user_ids() -> list:
     async with twitchio.Client(client_id=config["CLIENT_ID"], client_secret=config["CLIENT_SECRET"]) as client:
         await client.login()
         users = await client.fetch_users(logins=[config["BOT_UNAME"], config["OWNER_UNAME"]])
         return users
 
+
 u = asyncio.run(get_user_ids())
 
 BOT_ID = u[0].id
 OWNER_ID = u[1].id
+
 
 # this is mostly just the quickstart guide code from twitch.io
 # will rewrite later, just wanted to get going
@@ -121,13 +124,17 @@ class Bot(commands.AutoBot):
     async def event_ready(self) -> None:
         LOGGER.info("Successfully logged in as: %s", self.bot_id)
 
+
 # twitchio quickstart database function
 async def setup_database(db: asqlite.Pool) -> tuple[list[tuple[str, str]], list[eventsub.SubscriptionPayload]]:
     # Create our token table, if it doesn't exist..
     # You should add the created files to .gitignore or potentially store them somewhere safer
     # This is just for example purposes...
 
-    query = """CREATE TABLE IF NOT EXISTS tokens(user_id TEXT PRIMARY KEY, token TEXT NOT NULL, refresh TEXT NOT NULL)"""
+    query = """CREATE TABLE IF NOT EXISTS tokens
+               (user_id TEXT PRIMARY KEY,
+                token TEXT NOT NULL,
+                refresh TEXT NOT NULL)"""
     async with db.acquire() as connection:
         await connection.execute(query)
 
@@ -165,7 +172,3 @@ def main() -> None:
         asyncio.run(runner())
     except KeyboardInterrupt:
         LOGGER.warning("Shutting down due to KeyboardInterrupt")
-
-# provide links in console when bot is run to get proper oauth for user and bot accounts
-
-
