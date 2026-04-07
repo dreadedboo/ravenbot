@@ -9,6 +9,7 @@ from twitchio import eventsub
 from twitchio.ext import commands
 from twitchio.ext.commands import CommandErrorPayload
 
+from bots.twitch.components.EmoteComp import EmotesComp
 from bots.twitch.components.ModeratorComp import ModComp
 from bots.twitch.components.CoreComp import CoreComp
 from bots.twitch.components.CustomCommands import CustomCommands
@@ -68,6 +69,7 @@ class Bot(commands.AutoBot):
         await self.add_component(ModComp(self))
         await self.add_component(CustomCommands(self))
         await self.add_component(OBSComp(self))
+        await self.add_component(EmotesComp(self))
         await self.add_component(CoreComp(self))
 
     # override the builtin event_command_error listener to bypass errors when a command is in the custom commands file
@@ -102,18 +104,18 @@ class Bot(commands.AutoBot):
 
     # twitchio quickstart token function
     async def add_token(self, token: str, refresh: str) -> twitchio.authentication.ValidateTokenPayload:
-        # Make sure to call super() as it will add the tokens interally and return us some data...
+        # Make sure to call super() as it will add the tokens internally and return us some data...
         resp: twitchio.authentication.ValidateTokenPayload = await super().add_token(token, refresh)
 
         # Store our tokens in a simple SQLite Database when they are authorized...
         query = """
-                INSERT INTO tokens (user_id, token, refresh)
-                VALUES (?, ?, ?) ON CONFLICT(user_id)
-                DO \
-                UPDATE SET
-                    token = excluded.token, \
-                    refresh = excluded.refresh;
-                """
+        INSERT INTO tokens (user_id, token, refresh)
+        VALUES (?, ?, ?)
+        ON CONFLICT(user_id)
+        DO UPDATE SET
+            token = excluded.token,
+            refresh = excluded.refresh;
+        """
 
         async with self.token_database.acquire() as connection:
             await connection.execute(query, (resp.user_id, token, refresh))
@@ -131,27 +133,12 @@ async def setup_database(db: asqlite.Pool) -> tuple[list[tuple[str, str]], list[
     # You should add the created files to .gitignore or potentially store them somewhere safer
     # This is just for example purposes...
 
-    query = """CREATE TABLE IF NOT EXISTS tokens
-               (
-                   user_id
-                   TEXT
-                   PRIMARY
-                   KEY,
-                   token
-                   TEXT
-                   NOT
-                   NULL,
-                   refresh
-                   TEXT
-                   NOT
-                   NULL
-               )"""
+    query = """CREATE TABLE IF NOT EXISTS tokens(user_id TEXT PRIMARY KEY, token TEXT NOT NULL, refresh TEXT NOT NULL)"""
     async with db.acquire() as connection:
         await connection.execute(query)
 
         # Fetch any existing tokens...
-        rows: list[sqlite3.Row] = await connection.fetchall("""SELECT *
-                                                               from tokens""")
+        rows: list[sqlite3.Row] = await connection.fetchall("""SELECT * from tokens""")
 
         tokens: list[tuple[str, str]] = []
         subs: list[eventsub.SubscriptionPayload] = []
@@ -169,15 +156,12 @@ async def setup_database(db: asqlite.Pool) -> tuple[list[tuple[str, str]], list[
 
 def main() -> None:
     twitchio.utils.setup_logging(level=logging.INFO)
-
     async def runner() -> None:
         async with asqlite.create_pool("tokens.db") as tdb:
             tokens, subs = await setup_database(tdb)
-
             async with Bot(token_database=tdb, subs=subs) as bot:
                 for pair in tokens:
                     await bot.add_token(*pair)
-
                 await bot.start(load_tokens=False)
 
     try:

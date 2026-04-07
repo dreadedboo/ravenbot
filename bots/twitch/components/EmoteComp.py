@@ -1,11 +1,8 @@
-import asyncio
+from twitchio.ext import commands
+from utilities.EmoteUtils import SevenTVConnection
 
-from eventapi.EventApi import EventApi
-from eventapi.WebSocket import (
-    EventType,
-    ResponseTypes,
-    SubscriptionCondition,
-    SubscriptionData,
-)
-
-import requests
+class EmotesComp(commands.Component):
+    def __init__(self, bot):
+        self.bot = bot
+        self.token = bot.tokens[bot.bot_id]["token"]
+        self.seven_tv = SevenTVConnection(self.token)
