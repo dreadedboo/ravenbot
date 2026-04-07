@@ -1,3 +1,4 @@
+from twitchio import User
 from twitchio.ext import commands
 from utilities.CoreUtils import logger
 
@@ -30,5 +31,13 @@ async def check_mod(ctx: commands.Context) -> bool:
     moderators = ctx.channel.fetch_moderators()
     async for m in moderators:
         if ctx.author.id == m.id or ctx.broadcaster.id:
+            return True
+    return False
+
+# function to check if a user is vip
+async def check_vip(ctx: commands.Context, user: User) -> bool:
+    vips = ctx.channel.fetch_vips()
+    async for v in vips:
+        if user.id == v.id:
             return True
     return False

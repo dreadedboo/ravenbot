@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from twitchio import User, Chatter
+from twitchio import User
 from twitchio.ext import commands
 
 from utilities.CoreUtils import concat_string_from_args, logger

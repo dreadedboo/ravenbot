@@ -9,6 +9,7 @@ from twitchio import eventsub
 from twitchio.ext import commands
 from twitchio.ext.commands import CommandErrorPayload
 
+from bots.twitch.components.ModeratorComp import ModComp
 from bots.twitch.components.CoreComp import CoreComp
 from bots.twitch.components.CustomCommands import CustomCommands
 from bots.twitch.components.LivesplitComp import Livesplit
@@ -56,11 +57,12 @@ class Bot(commands.AutoBot):
         LOGGER.info("open the following link as bot account in your config file: "
                     "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
         LOGGER.info("open the following link as your actual account: "
-                    "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderation:read%20moderator:read:followers&force_verify=true")
+                    "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderation:read%20moderator:read:followers%20channel:manage:vips&force_verify=true")
 
     # add components and commands
     async def setup_hook(self) -> None:
         await self.add_component(Livesplit(self))
+        await self.add_component(ModComp(self))
         await self.add_component(CustomCommands(self))
         await self.add_component(OBSComp(self))
         await self.add_component(CoreComp(self))
