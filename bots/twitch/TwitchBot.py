@@ -56,7 +56,7 @@ class Bot(commands.AutoBot):
         LOGGER.info("open the following link as bot account in your config file: "
                     "http://localhost:4343/oauth?scopes=user:read:chat%20user:write:chat%20user:bot&force_verify=true")
         LOGGER.info("open the following link as your actual account: "
-                    "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderator:read:followers&force_verify=true")
+                    "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderation:read%20moderator:read:followers&force_verify=true")
 
     # add components and commands
     async def setup_hook(self) -> None:

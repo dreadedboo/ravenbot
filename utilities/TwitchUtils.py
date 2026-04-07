@@ -17,10 +17,18 @@ async def change_game(bot, ctx: commands.Context, game_name: str) -> None:
     await ctx.send(f"Current game is: {channel_info.game_name}")
 
 # function for any command that needs to change the current title
-async def change_title(bot, ctx: commands.Context, title: str) -> None:
+async def change_title(ctx: commands.Context, title: str) -> None:
     channel_info = await ctx.channel.fetch_channel_info()
     if title != channel_info.title:
         await ctx.channel.modify_channel(title=title)
         await ctx.send(f"Title successfully changed to: {title}")
         return
     await ctx.send(f"Current title is: {channel_info.title}")
+
+# function to check if a user is moderator or the broadcaster for commands that do different things for mods like game and title
+async def check_mod(ctx: commands.Context) -> bool:
+    moderators = ctx.channel.fetch_moderators()
+    async for m in moderators:
+        if ctx.author.id == m.id or ctx.broadcaster.id:
+            return True
+    return False
