@@ -12,14 +12,23 @@ class Livesplit(commands.Component):
     def __init__(self, bot) -> None:
         self.bot = bot
         self.livesplit = LivesplitConnection()
+        self.retry_count = 0
 
     @commands.group(name="livesplit", aliases=["lsplit"], invoke_fallback=True)
     async def lsplit(self, ctx: commands.Context) -> None:
         if self.livesplit.get_string("ping") == "pong":
             await ctx.send("Currently connected to livesplit. Available commands: !pb !bpt !sob")
         else:
-            await ctx.send("Could not connect to livesplit")
-            LOGGER.info("Could not connect to livesplit")
+            if self.retry_count < 3:
+                self.livesplit.close()
+                self.retry_count += 1
+                self.livesplit = LivesplitConnection()
+                await self.lsplit(ctx)
+            else:
+                await ctx.send("Could not connect to livesplit")
+                self.livesplit.close()
+                LOGGER.info("Could not connect to livesplit")
+                self.retry_count = 0
 
     @commands.is_moderator()
     @lsplit.command(name="game")
@@ -48,13 +57,6 @@ class Livesplit(commands.Component):
     async def set_game_and_title(self, ctx: commands.Context):
         await self.set_game_from_splits(ctx)
         await self.set_title_from_category(ctx)
-
-    @commands.is_moderator()
-    @lsplit.command(name="connect")
-    async def connect_to_server(self, ctx: commands.Context) -> None:
-        self.livesplit.close()
-        self.livesplit = LivesplitConnection()
-        await self.lsplit(ctx)
 
     @commands.command(name="pb")
     async def get_personal_best(self, ctx: commands.Context) -> None:

@@ -11,6 +11,7 @@ HOST = config["host"]
 PORT = config["port"]
 PASSWD = config["pass"]
 
+
 class OBSConnection(ReqClient):
     def __init__(self):
         try:

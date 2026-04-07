@@ -16,20 +16,21 @@ class LivesplitConnection(socket):
         try:
             self.connect((HOST, PORT))
             LOGGER.info("Connected to LiveSplit Server")
-        except ConnectionRefusedError or ConnectionAbortedError:
+        except ConnectionError:
             LOGGER.error("Failed to connect to Livesplit server")
 
     def get_string(self, command: str) -> str:
         data = ""
-        self.settimeout(5.0)
         try:
+            self.settimeout(5.0)
             self.sendall(f"{command}\r\n".encode('utf-8'))
             try:
                 data: str = self.recv(1024).decode('UTF-8')
                 LOGGER.info(f"Command: {command} ran successfully. Received: {data[:-1]}")
                 return data[:-1]
-            except ConnectionAbortedError:
+            except ConnectionError or TimeoutError:
                 LOGGER.error("Lost connection to LiveSplit")
-        except TimeoutError:
-            LOGGER.error("Livesplit server connection timed out")
+        except OSError:
+            self.close()
+            self.__init__()
         return data

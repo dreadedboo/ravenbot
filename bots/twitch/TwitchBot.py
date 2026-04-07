@@ -132,14 +132,26 @@ async def setup_database(db: asqlite.Pool) -> tuple[list[tuple[str, str]], list[
     # This is just for example purposes...
 
     query = """CREATE TABLE IF NOT EXISTS tokens
-               (user_id TEXT PRIMARY KEY,
-                token TEXT NOT NULL,
-                refresh TEXT NOT NULL)"""
+               (
+                   user_id
+                   TEXT
+                   PRIMARY
+                   KEY,
+                   token
+                   TEXT
+                   NOT
+                   NULL,
+                   refresh
+                   TEXT
+                   NOT
+                   NULL
+               )"""
     async with db.acquire() as connection:
         await connection.execute(query)
 
         # Fetch any existing tokens...
-        rows: list[sqlite3.Row] = await connection.fetchall("""SELECT * from tokens""")
+        rows: list[sqlite3.Row] = await connection.fetchall("""SELECT *
+                                                               from tokens""")
 
         tokens: list[tuple[str, str]] = []
         subs: list[eventsub.SubscriptionPayload] = []
