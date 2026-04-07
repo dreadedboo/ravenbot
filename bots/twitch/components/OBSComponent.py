@@ -1,3 +1,6 @@
+import json
+
+from obsws_python.error import OBSSDKError
 from twitchio.ext import commands
 
 from utilities.OBSUtils import OBSConnection
@@ -19,7 +22,9 @@ class OBSComp(commands.Component):
         try:
             self.cl.get_version()
             await ctx.send("Connected to OBS")
-        except:
+        except (ConnectionError or
+                AttributeError or
+                OBSSDKError):
             if self.retry_count < 3:
                 self.retry_count += 1
                 self.cl.reconnect()

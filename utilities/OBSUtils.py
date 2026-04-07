@@ -15,13 +15,13 @@ class OBSConnection(ReqClient):
     def __init__(self):
         try:
             super().__init__(host=HOST, port=PORT, password=PASSWD, timeout=3)
-        except ConnectionRefusedError:
+        except ConnectionError:
             LOGGER.error("Failed to connect to OBS")
 
     def reconnect(self) -> bool:
         try:
             super().__init__(host=HOST, port=PORT, password=PASSWD, timeout=3)
             return True
-        except ConnectionRefusedError:
+        except ConnectionError:
             LOGGER.error("Failed to connect to OBS")
             return False
