@@ -1,8 +1,10 @@
 from twitchio import User
 from twitchio.ext import commands
+
 from utilities.CoreUtils import logger
 
 LOGGER = logger("TwitchUtils")
+
 
 # get current stream game/category
 async def get_game(ctx: commands.Context) -> str:

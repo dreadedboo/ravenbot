@@ -9,6 +9,8 @@ from twitchio import eventsub
 from twitchio.ext import commands
 from twitchio.ext.commands import CommandErrorPayload
 
+from utilities.CoreUtils import openfile, parse_commands, logger
+
 from bots.twitch.components.EmoteComp import EmotesComp
 from bots.twitch.components.ModeratorComp import ModComp
 from bots.twitch.components.CoreComp import CoreComp
@@ -16,14 +18,13 @@ from bots.twitch.components.CustomCommands import CustomCommands
 from bots.twitch.components.LivesplitComp import Livesplit
 from bots.twitch.components.OBSComponent import OBSComp
 
-from utilities.CoreUtils import openfile, parse_commands, logger
-
 if TYPE_CHECKING:
     import sqlite3
 
 LOGGER = logger("twitch-bot")
 
 config = openfile("resources/twitch_cfg.json")
+comps = openfile("resources/modules.json")
 
 CLIENT_ID = config["CLIENT_ID"]
 CLIENT_SECRET = config["CLIENT_SECRET"]
@@ -66,14 +67,29 @@ class Bot(commands.AutoBot):
 
     # add components and commands
     async def setup_hook(self) -> None:
-        await self.add_component(Livesplit(self))
-        await self.add_component(ModComp(self))
-        await self.add_component(CustomCommands(self))
-        await self.add_component(CoreComp(self))
-
-        # incomplete components commented out until more fleshed out
-        # await self.add_component(OBSComp(self))
-        # await self.add_component(EmotesComp(self))
+        for c in comps:
+            if c["enabled"] is True:
+                match c["name"]:
+                    case "emotes":
+                        await self.add_component(EmotesComp(self))
+                        LOGGER.info(f"Emotes Component loaded")
+                    case "livesplit":
+                        await self.add_component(Livesplit(self))
+                        LOGGER.info(f"LiveSplit Component loaded")
+                    case "moderation":
+                        await self.add_component(ModComp(self))
+                        LOGGER.info(f"Moderator Component loaded")
+                    case "obs":
+                        await self.add_component(OBSComp(self))
+                        LOGGER.info(f"OBS Component loaded")
+                    case "core":
+                        await self.add_component(CoreComp(self))
+                        LOGGER.info(f"Core Component loaded")
+                    case "custom commands":
+                        await self.add_component(CustomCommands(self))
+                        LOGGER.info(f"Custom Commands Component loaded")
+                    case _:
+                        LOGGER.error(f"No matching component for{c["name"]}")
 
 
     # override the builtin event_command_error listener to bypass errors when a command is in the custom commands file

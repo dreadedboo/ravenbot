@@ -1,0 +1,26 @@
+[
+  {
+    "name": "obs",
+    "enabled": false
+  },
+  {
+    "name": "emotes",
+    "enabled": false
+  },
+  {
+    "name": "livesplit",
+    "enabled": true
+  },
+  {
+    "name": "core",
+    "enabled": true
+  },
+  {
+    "name": "moderation",
+    "enabled": true
+  },
+  {
+    "name": "custom commands",
+    "enabled": true
+  }
+]
