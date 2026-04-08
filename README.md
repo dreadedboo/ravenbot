@@ -10,7 +10,7 @@
 ## current twitch features
 
 - game and title commands
-- livesplit commands (!pb, !bpt, !sob, !livesplit <game/title/setup/connect>) NOTE: game title and setup only work with
+- livesplit commands (!pb, !bpt, !sob, !livesplit <game/title/setup>) NOTE: game title and setup only work with
   aop-runs' fork of livesplit at the moment
 - followage command
 
