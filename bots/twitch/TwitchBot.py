@@ -11,13 +11,6 @@ from twitchio.ext.commands import CommandErrorPayload
 
 from utilities.CoreUtils import openfile, parse_commands, logger
 
-from bots.twitch.components.EmoteComp import EmotesComp
-from bots.twitch.components.ModeratorComp import ModComp
-from bots.twitch.components.CoreComp import CoreComp
-from bots.twitch.components.CustomCommands import CustomCommands
-from bots.twitch.components.LivesplitComp import Livesplit
-from bots.twitch.components.OBSComponent import OBSComp
-
 if TYPE_CHECKING:
     import sqlite3
 
@@ -66,26 +59,33 @@ class Bot(commands.AutoBot):
                     "http://localhost:4343/oauth?scopes=channel:bot%20channel:manage:broadcast%20moderation:read%20moderator:read:followers%20channel:manage:vips&force_verify=true")
 
     # add components and commands
+    # will only import and add which components are set to true in modules.json
     async def setup_hook(self) -> None:
         for c in comps:
             if c["enabled"] is True:
                 match c["name"]:
                     case "emotes":
+                        from bots.twitch.components.EmoteComp import EmotesComp
                         await self.add_component(EmotesComp(self))
                         LOGGER.info(f"Emotes Component loaded")
                     case "livesplit":
+                        from bots.twitch.components.LivesplitComp import Livesplit
                         await self.add_component(Livesplit(self))
                         LOGGER.info(f"LiveSplit Component loaded")
                     case "moderation":
+                        from bots.twitch.components.ModeratorComp import ModComp
                         await self.add_component(ModComp(self))
                         LOGGER.info(f"Moderator Component loaded")
                     case "obs":
+                        from bots.twitch.components.OBSComponent import OBSComp
                         await self.add_component(OBSComp(self))
                         LOGGER.info(f"OBS Component loaded")
                     case "core":
+                        from bots.twitch.components.CoreComp import CoreComp
                         await self.add_component(CoreComp(self))
                         LOGGER.info(f"Core Component loaded")
                     case "custom commands":
+                        from bots.twitch.components.CustomCommands import CustomCommands
                         await self.add_component(CustomCommands(self))
                         LOGGER.info(f"Custom Commands Component loaded")
                     case _:
