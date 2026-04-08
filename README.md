@@ -6,6 +6,7 @@
 - json based configs
 - custom commands and management
 - livesplit integration
+- modular, choose what to load on launch via modules.json
 
 ## current twitch features
 
@@ -23,6 +24,7 @@
 - obs integration
 - quotes
 - moderation features
+- load, unload, reload commands and components without restarting bot
 
 ## planned discord features:
 
