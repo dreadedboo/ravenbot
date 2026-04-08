@@ -15,6 +15,7 @@ from bots.twitch.components.CoreComp import CoreComp
 from bots.twitch.components.CustomCommands import CustomCommands
 from bots.twitch.components.LivesplitComp import Livesplit
 from bots.twitch.components.OBSComponent import OBSComp
+
 from utilities.CoreUtils import openfile, parse_commands, logger
 
 if TYPE_CHECKING:
