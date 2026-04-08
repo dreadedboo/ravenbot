@@ -1,3 +1,6 @@
+# commands that don't fit other components will go here
+# things like game, title, and followage
+
 from datetime import datetime
 
 from twitchio import User

@@ -68,9 +68,12 @@ class Bot(commands.AutoBot):
         await self.add_component(Livesplit(self))
         await self.add_component(ModComp(self))
         await self.add_component(CustomCommands(self))
-        await self.add_component(OBSComp(self))
-        await self.add_component(EmotesComp(self))
         await self.add_component(CoreComp(self))
+
+        # incomplete components commented out until more fleshed out
+        # await self.add_component(OBSComp(self))
+        # await self.add_component(EmotesComp(self))
+
 
     # override the builtin event_command_error listener to bypass errors when a command is in the custom commands file
     async def event_command_error(self, payload: CommandErrorPayload) -> None:

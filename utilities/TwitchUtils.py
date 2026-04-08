@@ -4,6 +4,11 @@ from utilities.CoreUtils import logger
 
 LOGGER = logger("TwitchUtils")
 
+# get current stream game/category
+async def get_game(ctx: commands.Context) -> str:
+    channel_info = await ctx.channel.fetch_channel_info()
+    return channel_info.game_name
+
 
 # function for any command that needs to change the current game
 async def change_game(bot, ctx: commands.Context, game_name: str) -> None:

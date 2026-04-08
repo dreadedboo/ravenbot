@@ -1,3 +1,6 @@
+# custom commands similar to nightbot
+# planning to add support for inline variables later
+
 import twitchio
 from twitchio.ext import commands
 

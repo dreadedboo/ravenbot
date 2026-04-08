@@ -1,3 +1,5 @@
+# functions to interact with OBS
+
 import obsws_python as obs
 from obsws_python import ReqClient
 

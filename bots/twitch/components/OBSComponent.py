@@ -1,5 +1,3 @@
-import json
-
 from obsws_python.error import OBSSDKError
 from twitchio.ext import commands
 

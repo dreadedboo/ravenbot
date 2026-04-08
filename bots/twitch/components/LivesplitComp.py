@@ -2,7 +2,8 @@ from twitchio.ext import commands
 
 from utilities.LivesplitUtils import LivesplitConnection
 from utilities.CoreUtils import logger
-from utilities.TwitchUtils import change_game, change_title
+from utilities.SRCUtils import get_pb
+from utilities.TwitchUtils import change_game, change_title, get_game
 
 LOGGER = logger("twitch-bot: Livesplit")
 
@@ -61,12 +62,23 @@ class Livesplit(commands.Component):
     @commands.command(name="pb")
     async def get_personal_best(self, ctx: commands.Context) -> None:
         reply = self.livesplit.get_string("getfinaltime Personal Best")
+        # SRC PB check
+        # game_name = self.livesplit.get_string("getgamename")
+        # category = self.livesplit.get_string("getcategoryname")
+        #
+        # if game_name != "" and category != "":
+        #     get_pb(game_name, ctx.broadcaster.name, category)
+        # else:
+        #     LOGGER.error("Failed to receive data from Livesplit")
+        #     game_name = await get_game(ctx)
+        #     get_pb(game_name, ctx.broadcaster.name)
+
         if reply != "":
             await ctx.send(f"Splits PB: {reply[:-8]}")
         else:
             await ctx.send("Failed to receive data from Livesplit")
             LOGGER.error("Failed to receive data from Livesplit")
-        # this command will also get leaderboard PB from SRC
+
 
     @commands.command(name="bpt")
     async def get_bpt(self, ctx: commands.Context) -> None:

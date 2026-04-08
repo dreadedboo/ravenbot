@@ -1,3 +1,6 @@
+# moderator only commands
+# currently just makes it so moderators can add or remove VIPs
+
 from twitchio import User
 from twitchio.ext import commands
 
